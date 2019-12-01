@@ -13,6 +13,7 @@
 #include <linux/msm_drm_notify.h>
 #include <linux/slab.h>
 #include <linux/version.h>
+#include <linux/sched.h>
 
 /* The sched_param struct is located elsewhere in newer kernels */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 10, 0)
@@ -64,6 +65,8 @@ module_param(cpu_freq_idle_prime, uint, 0644);
 
 module_param(input_boost_duration, short, 0644);
 module_param(wake_boost_duration, short, 0644);
+
+unsigned long last_input_time;
 
 enum {
 	SCREEN_ON,
@@ -171,6 +174,7 @@ static void __cpu_input_boost_kick(struct boost_drv *b)
 		return;
 
 	set_bit(INPUT_BOOST, &b->state);
+	sched_set_boost(2);
 	if (!mod_delayed_work(system_unbound_wq, &b->input_unboost,
 			      msecs_to_jiffies(input_boost_duration)))
 		wake_up(&b->boost_waitq);
@@ -221,6 +225,7 @@ static void input_unboost_worker(struct work_struct *work)
 					   typeof(*b), input_unboost);
 
 	clear_bit(INPUT_BOOST, &b->state);
+	sched_set_boost(0);
 	wake_up(&b->boost_waitq);
 }
 
@@ -306,10 +311,10 @@ static int msm_drm_notifier_cb(struct notifier_block *nb, unsigned long action,
 		return NOTIFY_OK;
 
 	/* Boost when the screen turns on and unboost when it turns off */
-	if (*blank == MSM_DRM_BLANK_UNBLANK_CUST) {
+	if (*blank == MSM_DRM_BLANK_UNBLANK) {
 		set_bit(SCREEN_ON, &b->state);
 		__cpu_input_boost_kick_max(b, wake_boost_duration);
-	} else if (*blank == MSM_DRM_BLANK_POWERDOWN_CUST) {
+	} else if (*blank == MSM_DRM_BLANK_POWERDOWN) {
 		clear_bit(SCREEN_ON, &b->state);
 		wake_up(&b->boost_waitq);
 	}
@@ -324,6 +329,8 @@ static void cpu_input_boost_input_event(struct input_handle *handle,
 	struct boost_drv *b = handle->handler->private;
 
 	__cpu_input_boost_kick(b);
+
+	last_input_time = jiffies;
 }
 
 static int cpu_input_boost_input_connect(struct input_handler *handler,
@@ -360,6 +367,7 @@ free_handle:
 
 static void cpu_input_boost_input_disconnect(struct input_handle *handle)
 {
+	sched_set_boost(0);
 	input_close_device(handle);
 	input_unregister_handle(handle);
 	kfree(handle);
