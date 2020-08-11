@@ -44,21 +44,14 @@
 	for (index = 0; (index < (display)->ctrl_count) &&\
 			(index < MAX_DSI_CTRLS_PER_DISPLAY); index++)
 
-#define DSI_WARN(fmt, ...)	DRM_WARN("[msm-dsi-warn]: "fmt, ##__VA_ARGS__)
-#define DSI_ERR(fmt, ...)	DRM_DEV_DEBUG(NULL, "[msm-dsi-error]: " fmt, \
-								##__VA_ARGS__)
-#define DSI_INFO(fmt, ...)	DRM_DEV_DEBUG(NULL, "[msm-dsi-info]: "fmt, \
-								##__VA_ARGS__)
-#define DSI_DEBUG(fmt, ...)	DRM_DEV_DEBUG(NULL, "[msm-dsi-debug]: "fmt, \
-								##__VA_ARGS__)
+#define DSI_WARN(fmt, ...)
+#define DSI_ERR(fmt, ...)
+#define DSI_INFO(fmt, ...)
+#define DSI_DEBUG(fmt, ...)
 
 #ifdef OPLUS_BUG_STABILITY
 #include <soc/oplus/system/oplus_mm_kevent_fb.h>
-#define DSI_MM_ERR(fmt, ...)	\
-	do { \
-		DRM_DEV_ERROR(NULL, "[msm-dsi-error]: " fmt, ##__VA_ARGS__); \
-		mm_fb_display_kevent_named(MM_FB_KEY_RATELIMIT_1H, fmt, ##__VA_ARGS__); \
-	} while(0)
+#define DSI_MM_ERR(fmt, ...)
 #endif /* OPLUS_BUG_STABILITY */
 
 /**
