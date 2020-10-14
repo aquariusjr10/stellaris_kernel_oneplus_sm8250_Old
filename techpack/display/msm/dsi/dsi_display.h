@@ -191,6 +191,8 @@ struct dsi_display_ext_bridge {
  * @queue_cmd_waits   Indicates if wait for dma commands done has to be queued.
  * @dma_cmd_workq:	Pointer to the workqueue of DMA command transfer done
  *				wait sequence.
+ * @tx_cmd_buf_ndx:   Index to the DSI debugfs TX CMD buffer.
+ * @cmd_set:	      Debugfs TX cmd set.
  */
 struct dsi_display {
 	struct platform_device *pdev;
@@ -296,6 +298,8 @@ struct dsi_display {
 	uint32_t current_qsync_mode;
 	uint32_t current_qsync_dynamic_min_fps;
 #endif /* OPLUS_FEATURE_ADFR */
+	int tx_cmd_buf_ndx;
+	struct dsi_panel_cmd_set cmd_set;
 };
 
 int dsi_display_dev_probe(struct platform_device *pdev);

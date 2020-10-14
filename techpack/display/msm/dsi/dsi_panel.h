@@ -453,4 +453,15 @@ int dsi_panel_tx_cmd_set(struct dsi_panel *panel,
 int dsi_panel_fps60_cmd_set(struct dsi_panel *panel);
 int dsi_panel_fps120_cmd_set(struct dsi_panel *panel);
 #endif
+int dsi_panel_get_cmd_pkt_count(const char *data, u32 length, u32 *cnt);
+
+int dsi_panel_alloc_cmd_packets(struct dsi_panel_cmd_set *cmd,
+		u32 packet_count);
+
+int dsi_panel_create_cmd_packets(const char *data, u32 length, u32 count,
+					struct dsi_cmd_desc *cmd);
+
+void dsi_panel_destroy_cmd_packets(struct dsi_panel_cmd_set *set);
+
+void dsi_panel_dealloc_cmd_packets(struct dsi_panel_cmd_set *set);
 #endif /* _DSI_PANEL_H_ */
