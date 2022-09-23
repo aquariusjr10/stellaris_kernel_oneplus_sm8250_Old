@@ -2154,14 +2154,6 @@ static int enable_vbus(struct usbpd *pd)
 		}
 	}
 
-#ifndef OPLUS_FEATURE_CHG_BASIC
-	ret = regulator_enable(pd->vbus);
-	if (ret)
-		usbpd_err(&pd->dev, "Unable to enable vbus (%d)\n", ret);
-	else
-		pd->vbus_enabled = true;
-#endif
-
 	count = 10;
 	/*
 	 * Check to make sure VBUS voltage reaches above Vsafe5Vmin (4.75v)
