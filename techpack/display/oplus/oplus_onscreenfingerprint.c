@@ -34,6 +34,7 @@ extern int oplus_underbrightness_alpha;
 extern int oplus_dimlayer_dither_threshold;
 extern int oplus_panel_alpha;
 extern int hbm_mode;
+extern int oplus_skip_pcc_override;
 extern bool oplus_ffl_trigger_finish;
 extern int dynamic_osc_clock;
 extern ktime_t oplus_onscreenfp_pressed_time;
@@ -707,6 +708,10 @@ bool is_skip_pcc(struct drm_crtc *crtc)
 	if (OPLUS_DISPLAY_POWER_DOZE_SUSPEND == get_oplus_display_power_status() ||
 	    OPLUS_DISPLAY_POWER_DOZE == get_oplus_display_power_status() ||
 	    sde_crtc_get_fingerprint_mode(crtc->state))
+	    return true;
+	    
+	if (sde_crtc_get_fingerprint_pressed(crtc->state)
+		&& oplus_skip_pcc_override == 0)
 		return true;
 
 	return false;
