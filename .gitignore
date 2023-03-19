@@ -164,3 +164,4 @@ src/tests/qemu/distfiles/
 .cache.mk
 src/crypto/zinc/*/*.S
 src/wireguard.mod
+regen.sh
