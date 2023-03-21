@@ -62,6 +62,3 @@ endif
 obj-y += audio_extend_dlkm.o
 audio_extend_dlkm-y := $(AUDIO_EXTEND_OBJS)
 
-# inject some build related information
-DEFINES += -DBUILD_TIMESTAMP=\"$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')\"
-
