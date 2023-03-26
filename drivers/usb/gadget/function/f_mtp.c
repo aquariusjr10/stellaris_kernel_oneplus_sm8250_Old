@@ -1182,6 +1182,7 @@ int mtp_unregister_notifier(struct notifier_block *nb)
 EXPORT_SYMBOL(mtp_unregister_notifier);
 #endif /*OPLUS_FEATURE_CHG_BASIC*/
 
+
 static long mtp_ioctl(struct file *fp, unsigned int code, unsigned long value)
 {
 	struct mtp_dev *dev = fp->private_data;
