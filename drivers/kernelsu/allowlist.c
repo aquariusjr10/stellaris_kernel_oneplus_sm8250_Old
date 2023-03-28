@@ -33,10 +33,10 @@ void ksu_show_allow_list(void)
 {
 	struct perm_data *p = NULL;
 	struct list_head *pos = NULL;
-	pr_info("ksu_show_allow_list");
+	pr_debug("ksu_show_allow_list");
 	list_for_each (pos, &allow_list) {
 		p = list_entry(pos, struct perm_data, list);
-		pr_info("uid :%d, allow: %d\n", p->uid, p->allow);
+		pr_debug("uid :%d, allow: %d\n", p->uid, p->allow);
 	}
 }
 
@@ -102,7 +102,7 @@ bool ksu_get_allow_list(int *array, int *length, bool allow)
 	int i = 0;
 	list_for_each (pos, &allow_list) {
 		p = list_entry(pos, struct perm_data, list);
-		pr_info("get_allow_list uid: %d allow: %d\n", p->uid, p->allow);
+		pr_debug("get_allow_list uid: %d allow: %d\n", p->uid, p->allow);
 		if (p->allow == allow) {
 			array[i++] = p->uid;
 		}
@@ -142,7 +142,7 @@ void do_persistent_allow_list(struct work_struct *work)
 
 	list_for_each (pos, &allow_list) {
 		p = list_entry(pos, struct perm_data, list);
-		pr_info("save allow list uid :%d, allow: %d\n", p->uid,
+		pr_debug("save allow list uid :%d, allow: %d\n", p->uid,
 			p->allow);
 		ksu_kernel_write_compat(fp, &p->uid, sizeof(p->uid), &off);
 		ksu_kernel_write_compat(fp, &p->allow, sizeof(p->allow), &off);
@@ -193,19 +193,19 @@ void do_load_allow_list(struct work_struct *work)
 		goto exit;
 	}
 
-	pr_info("allowlist version: %d\n", version);
+	pr_debug("allowlist version: %d\n", version);
 
 	while (true) {
 		u32 uid;
 		bool allow = false;
 		ret = ksu_kernel_read_compat(fp, &uid, sizeof(uid), &off);
 		if (ret <= 0) {
-			pr_info("load_allow_list read err: %d\n", ret);
+			pr_debug("load_allow_list read err: %d\n", ret);
 			break;
 		}
 		ret = ksu_kernel_read_compat(fp, &allow, sizeof(allow), &off);
 
-		pr_info("load_allow_uid: %d, allow: %d\n", uid, allow);
+		pr_debug("load_allow_uid: %d, allow: %d\n", uid, allow);
 
 		ksu_allow_uid(uid, allow, false);
 	}
@@ -227,7 +227,7 @@ void ksu_prune_allowlist(bool (*is_uid_exist)(uid_t, void *), void *data)
 		uid_t uid = np->uid;
 		if (!is_uid_exist(uid, data)) {
 			modified = true;
-			pr_info("prune uid: %d\n", uid);
+			pr_debug("prune uid: %d\n", uid);
 			list_del(&np->list);
 			kfree(np);
 		}

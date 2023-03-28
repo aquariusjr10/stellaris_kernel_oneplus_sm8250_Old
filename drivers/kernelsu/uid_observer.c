@@ -104,7 +104,7 @@ static void do_update_uid(struct work_struct *work)
 	}
 
 	if (!manager_exist && ksu_is_manager_uid_valid()) {
-		pr_info("manager is uninstalled, invalidate it!\n");
+		pr_debug("manager is uninstalled, invalidate it!\n");
 		ksu_invalidate_manager_uid();
 	}
 

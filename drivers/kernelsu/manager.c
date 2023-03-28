@@ -27,7 +27,7 @@ bool become_manager(char *pkg)
 	// must be zygote's direct child, otherwise any app can fork a new process and
 	// open manager's apk
 	if (task_uid(current->real_parent).val != 0) {
-		pr_info("parent is not zygote!\n");
+		pr_debug("parent is not zygote!\n");
 		return false;
 	}
 
@@ -50,23 +50,23 @@ bool become_manager(char *pkg)
 		if (startswith(cwd, "/data/app/") == 0 &&
 		    endswith(cwd, "/base.apk") == 0) {
 			// we have found the apk!
-			pr_info("found apk: %s", cwd);
+			pr_debug("found apk: %s", cwd);
 			if (!strstr(cwd, pkg)) {
-				pr_info("apk path not match package name!\n");
+				pr_debug("apk path not match package name!\n");
 				i++;
 				continue;
 			}
 			if (is_manager_apk(cwd) == 0) {
 				// check passed
 				uid_t uid = current_uid().val;
-				pr_info("manager uid: %d\n", uid);
+				pr_debug("manager uid: %d\n", uid);
 
 				ksu_set_manager_uid(uid);
 
 				result = true;
 				goto clean;
 			} else {
-				pr_info("manager signature invalid!");
+				pr_debug("manager signature invalid!");
 			}
 
 			break;

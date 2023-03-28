@@ -105,7 +105,7 @@ int ksu_handle_rename(struct dentry *old_dentry, struct dentry *new_dentry)
 	if (strcmp(buf, "/system/packages.list")) {
 		return 0;
 	}
-	pr_info("renameat: %s -> %s, new path: %s", old_dentry->d_iname,
+	pr_debug("renameat: %s -> %s, new path: %s", old_dentry->d_iname,
 		new_dentry->d_iname, buf);
 
 	update_uid();
@@ -124,7 +124,7 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 		return 0;
 	}
 
-	pr_info("option: 0x%x, cmd: %ld\n", option, arg2);
+	pr_debug("option: 0x%x, cmd: %ld\n", option, arg2);
 
 	if (arg2 == CMD_BECOME_MANAGER) {
 		// quick check
@@ -135,7 +135,7 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 			return 0;
 		}
 		if (ksu_is_manager_uid_valid()) {
-			pr_info("manager already exist: %d\n",
+			pr_debug("manager already exist: %d\n",
 				ksu_get_manager_uid());
 			return 0;
 		}
@@ -150,7 +150,7 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 		}
 
 		if (startswith(param, (char *)prefix) != 0) {
-			pr_info("become_manager: invalid param: %s\n", param);
+			pr_debug("become_manager: invalid param: %s\n", param);
 			return 0;
 		}
 
@@ -167,7 +167,7 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 			return 0;
 		}
 		char *pkg = param + strlen(prefix);
-		pr_info("become_manager: param pkg: %s\n", pkg);
+		pr_debug("become_manager: param pkg: %s\n", pkg);
 
 		bool success = become_manager(pkg);
 		if (success) {
@@ -181,13 +181,13 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 
 	if (arg2 == CMD_GRANT_ROOT) {
 		if (is_allow_su()) {
-			pr_info("allow root for: %d\n", current_uid());
+			pr_debug("allow root for: %d\n", current_uid());
 			escape_to_root();
 			if (copy_to_user(result, &reply_ok, sizeof(reply_ok))) {
 				pr_err("grant_root: prctl reply error\n");
 			}
 		} else {
-			pr_info("deny root for: %d\n", current_uid());
+			pr_debug("deny root for: %d\n", current_uid());
 			// add it to deny list!
 			ksu_allow_uid(current_uid().val, false, true);
 		}
@@ -214,7 +214,7 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 			static bool post_fs_data_lock = false;
 			if (!post_fs_data_lock) {
 				post_fs_data_lock = true;
-				pr_info("post-fs-data triggered");
+				pr_debug("post-fs-data triggered");
 				on_post_fs_data();
 			}
 			break;
@@ -223,7 +223,7 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 			static bool boot_complete_lock = false;
 			if (!boot_complete_lock) {
 				boot_complete_lock = true;
-				pr_info("boot_complete triggered");
+				pr_debug("boot_complete triggered");
 			}
 			break;
 		}
@@ -280,7 +280,7 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 
 	// all other cmds are for 'root manager'
 	if (!is_manager()) {
-		pr_info("Only manager can do cmd: %d\n", arg2);
+		pr_debug("Only manager can do cmd: %d\n", arg2);
 		return 0;
 	}
 
@@ -351,12 +351,12 @@ __maybe_unused int ksu_kprobe_init(void)
 	rc = register_kprobe(&prctl_kp);
 
 	if (rc) {
-		pr_info("prctl kprobe failed: %d.\n", rc);
+		pr_debug("prctl kprobe failed: %d.\n", rc);
 		return rc;
 	}
 
 	rc = register_kprobe(&renameat_kp);
-	pr_info("renameat kp: %d\n", rc);
+	pr_debug("renameat kp: %d\n", rc);
 
 	return rc;
 }
@@ -387,7 +387,7 @@ static int ksu_key_permission(key_ref_t key_ref, const struct cred *cred,
 		return 0;
 	}
 	init_session_keyring = cred->session_keyring;
-	pr_info("kernel_compat: got init_session_keyring");
+	pr_debug("kernel_compat: got init_session_keyring");
 	return 0;
 }
 #endif
@@ -418,10 +418,10 @@ void __init ksu_lsm_hook_init(void)
 void __init ksu_core_init(void)
 {
 #ifndef MODULE
-	pr_info("ksu_lsm_hook_init\n");
+	pr_debug("ksu_lsm_hook_init\n");
 	ksu_lsm_hook_init();
 #else
-	pr_info("ksu_kprobe_init\n");
+	pr_debug("ksu_kprobe_init\n");
 	ksu_kprobe_init();
 #endif
 }
@@ -429,7 +429,7 @@ void __init ksu_core_init(void)
 void ksu_core_exit(void)
 {
 #ifndef MODULE
-	pr_info("ksu_kprobe_exit\n");
+	pr_debug("ksu_kprobe_exit\n");
 	ksu_kprobe_exit();
 #endif
 }

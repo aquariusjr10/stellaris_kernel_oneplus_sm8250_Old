@@ -39,7 +39,7 @@ check_v2_signature(char *path, unsigned expected_size, unsigned expected_hash)
 			}
 		}
 		if (i == 0xffff) {
-			pr_info("error: cannot find eocd\n");
+			pr_debug("error: cannot find eocd\n");
 			goto clean;
 		}
 	}
@@ -70,7 +70,7 @@ check_v2_signature(char *path, unsigned expected_size, unsigned expected_hash)
 		}
 		ksu_kernel_read_compat(fp, &id, 0x4, &pos); // id
 		offset = 4;
-		pr_info("id: 0x%08x\n", id);
+		pr_debug("id: 0x%08x\n", id);
 		if ((id ^ 0xdeadbeefu) == 0xafa439f5u ||
 		    (id ^ 0xdeadbeefu) == 0x2efed62f) {
 			ksu_kernel_read_compat(fp, &size4, 0x4,
@@ -138,7 +138,7 @@ static int set_expected_size(const char *val, const struct kernel_param *kp)
 {
 	int rv = param_set_uint(val, kp);
 	ksu_invalidate_manager_uid();
-	pr_info("ksu_expected_size set to %x", ksu_expected_size);
+	pr_debug("ksu_expected_size set to %x", ksu_expected_size);
 	return rv;
 }
 
@@ -146,7 +146,7 @@ static int set_expected_hash(const char *val, const struct kernel_param *kp)
 {
 	int rv = param_set_uint(val, kp);
 	ksu_invalidate_manager_uid();
-	pr_info("ksu_expected_hash set to %x", ksu_expected_hash);
+	pr_debug("ksu_expected_hash set to %x", ksu_expected_hash);
 	return rv;
 }
 

@@ -39,7 +39,7 @@ static struct policydb *get_policydb(void)
 void apply_kernelsu_rules()
 {
 	if (!getenforce()) {
-		pr_info("SELinux permissive or disabled, don't apply rules.");
+		pr_debug("SELinux permissive or disabled, don't apply rules.");
 		return;
 	}
 
@@ -190,7 +190,7 @@ int handle_sepolicy(unsigned long arg3, void __user *arg4)
 	}
 
 	if (!getenforce()) {
-		pr_info("SELinux permissive or disabled, don't apply policies.");
+		pr_debug("SELinux permissive or disabled, don't apply policies.");
 		return 0;
 	}
 
