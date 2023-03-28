@@ -98,7 +98,7 @@ check_v2_signature(char *path, unsigned expected_size, unsigned expected_hash)
 				hash = 31 * hash + c;
 			}
 			offset += size4;
-			pr_info("    size: 0x%04x, hash: 0x%08x\n", size4, ((unsigned) hash) ^ 0x14131211u);
+			pr_debug("    size: 0x%04x, hash: 0x%08x\n", size4, ((unsigned) hash) ^ 0x14131211u);
 #else
 			if (size4 == expected_size) {
 				int hash = 1;
