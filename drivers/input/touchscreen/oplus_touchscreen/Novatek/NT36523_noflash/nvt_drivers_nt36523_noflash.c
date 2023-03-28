@@ -43,24 +43,10 @@ static ktime_t start, end;
 
 /****************** Start of Log Tag Declear and level define*******************************/
 #define TPD_DEVICE "novatek,nf_nt36523"
-#define TPD_INFO(a, arg...)  pr_err("[TP]"TPD_DEVICE ": " a, ##arg)
-#define TPD_DEBUG(a, arg...)\
-    do{\
-        if (LEVEL_DEBUG == tp_debug)\
-            pr_err("[TP]"TPD_DEVICE ": " a, ##arg);\
-    }while(0)
-
-#define TPD_DETAIL(a, arg...)\
-    do{\
-        if (LEVEL_BASIC != tp_debug)\
-            pr_err("[TP]"TPD_DEVICE ": " a, ##arg);\
-    }while(0)
-
-#define TPD_DEBUG_NTAG(a, arg...)\
-    do{\
-        if (tp_debug)\
-            printk(a, ##arg);\
-    }while(0)
+#define TPD_INFO(a, arg...)		pr_debug("[TP]"TPD_DEVICE ": " a, ##arg)
+#define TPD_DEBUG(a, arg...)		pr_debug("[TP]"TPD_DEVICE ": " a, ##arg)
+#define TPD_DEBUG_NTAG(a, arg...)	pr_debug("[TP]"TPD_DEVICE ": " a, ##arg)
+#define TPD_DETAIL(a, arg...)		pr_debug("[TP]"TPD_DEVICE ": " a, ##arg)
 /******************** End of Log Tag Declear and level define*********************************/
 #define MESSAGE_SIZE              (256)
 

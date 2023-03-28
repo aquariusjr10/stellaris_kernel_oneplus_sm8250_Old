@@ -9,17 +9,9 @@
 /*******LOG TAG Declear*****************************/
 
 #define TPD_DEVICE "nvt_common"
-#define TPD_INFO(a, arg...)  pr_err("[TP]"TPD_DEVICE ": " a, ##arg)
-#define TPD_DEBUG(a, arg...)\
-    do{\
-        if (tp_debug)\
-        pr_err("[TP]"TPD_DEVICE ": " a, ##arg);\
-    }while(0)
-#define TPD_DETAIL(a, arg...)\
-    do{\
-        if (LEVEL_BASIC != tp_debug)\
-            pr_err("[TP]"TPD_DEVICE ": " a, ##arg);\
-    }while(0)
+#define TPD_INFO(a, arg...)		pr_debug("[TP]"TPD_DEVICE ": " a, ##arg)
+#define TPD_DEBUG(a, arg...)		pr_debug("[TP]"TPD_DEVICE ": " a, ##arg)
+#define TPD_DETAIL(a, arg...)		pr_debug("[TP]"TPD_DEVICE ": " a, ##arg)
 
 /*********** nvt tool operate content***********************/
 static ssize_t nvt_flash_read(struct file *filp, char __user *buff, size_t count, loff_t *offp)

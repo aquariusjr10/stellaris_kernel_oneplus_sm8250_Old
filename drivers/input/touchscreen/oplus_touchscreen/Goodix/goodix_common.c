@@ -6,12 +6,8 @@
 #include "goodix_common.h"
 
 #define TPD_DEVICE "goodix_common"
-#define TPD_INFO(a, arg...)  pr_err("[TP]"TPD_DEVICE ": " a, ##arg)
-#define TPD_DEBUG(a, arg...)\
-    do{\
-        if (tp_debug)\
-        pr_err("[TP]"TPD_DEVICE ": " a, ##arg);\
-    }while(0)
+#define TPD_INFO(a, arg...)		pr_debug("[TP]"TPD_DEVICE ": " a, ##arg)
+#define TPD_DEBUG(a, arg...)		pr_debug("[TP]"TPD_DEVICE ": " a, ##arg)
 
 /**
  * search_for_item_offset - get each item offset form test limit fw

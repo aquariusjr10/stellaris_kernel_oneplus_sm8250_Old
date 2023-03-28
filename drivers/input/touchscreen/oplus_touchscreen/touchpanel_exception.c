@@ -31,7 +31,7 @@
 #define TPD_DEVICE "touchpanel"
 #endif
 
-#define TPD_INFO(a, arg...)  pr_err("[TP]"TPD_DEVICE ": " a, ##arg)
+#define TPD_INFO(a, arg...)		pr_debug("[TP]"TPD_DEVICE ": " a, ##arg)
 
 static inline void *tp_kzalloc(size_t size, gfp_t flags)
 {

@@ -10,30 +10,25 @@ int gt1x_rawdiff_mode ;
 /****************************PART1:Log TAG****************************/
 
 #define TPD_DEVICE "Goodix-TOOL"
-#define TPD_INFO(fmt, arg...)        pr_err(TPD_DEVICE ": " fmt, ##arg)
-#define TPD_DEBUG(fmt, arg...)       do{\
-    if (tp_debug)\
-    pr_err(TPD_DEVICE ": " fmt, ##arg);\
-}while(0)
-
+#define TPD_INFO(fmt, arg...)       pr_debug(TPD_DEVICE ": " fmt, ##arg)
+#define TPD_DEBUG(fmt, arg...)      pr_debug(TPD_DEVICE ": " fmt, ##arg)
 #define TPD_DEBUG_ARRAY(array, num)    do{\
     s32 i;\
     u8* a = array;\
     if (tp_debug)\
     {\
-        pr_err("<< GTP-TOOL-DBG >>");\
+        pr_debug("<< GTP-TOOL-DBG >>");\
         for (i = 0; i < (num); i++)\
         {\
-            pr_err("%02x ", (a)[i]);\
+            pr_debug("%02x ", (a)[i]);\
             if ((i + 1) % 10 == 0)\
             {\
-                pr_err("\n<< GTP-DBG >>");\
+                pr_debug("\n<< GTP-DBG >>");\
             }\
         }\
-        pr_err("\n");\
+        pr_debug("\n");\
     }\
 }while(0)
-
 /****************************PART2:Code * && function****************************/
 
 static ssize_t gt1x_tool_read     (struct file *filp, char __user * buffer, size_t count, loff_t * ppos);
