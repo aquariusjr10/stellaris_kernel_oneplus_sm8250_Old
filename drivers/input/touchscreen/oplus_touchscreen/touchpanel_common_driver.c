@@ -259,7 +259,6 @@ void operate_mode_switch(struct touchpanel_data *ts)
 static void tp_touch_down(struct touchpanel_data *ts, struct point_info points, int touch_report_num, int id)
 {
 	static int last_width_major;
-	static int point_num = 0;
 
 	if (ts->input_dev == NULL) {
 		return;
@@ -1142,7 +1141,6 @@ static void tp_fingerprint_handle(struct touchpanel_data *ts)
 static void tp_pen_handle(struct touchpanel_data *ts)
 {
 	struct pen_info pen_info;
-	static int point_num = 0;
 	static struct pen_info last_point = {.x = 0, .y = 0};
 	static bool up_status = false;
 	if (!ts->ts_ops->get_pen_points) {
