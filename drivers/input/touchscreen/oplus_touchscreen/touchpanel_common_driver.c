@@ -70,6 +70,8 @@ static int pm_qos_state = 0;
 #define PM_QOS_TOUCH_WAKEUP_VALUE 400
 #endif
 
+uint8_t DouTap_enable = 0;               // double tap
+
 static int sigle_num = 0;
 static struct timeval tpstart, tpend;
 static int pointx[2] = {0, 0};
@@ -493,6 +495,7 @@ int sec_double_tap(struct gesture_info *gesture)
 static void tp_gesture_handle(struct touchpanel_data *ts)
 {
 	struct gesture_info gesture_info_temp;
+	bool enabled = DouTap_enable;
 
 	if (!ts->ts_ops->get_gesture_info) {
 		TPD_INFO("not support ts->ts_ops->get_gesture_info callback\n");
@@ -547,7 +550,7 @@ static void tp_gesture_handle(struct touchpanel_data *ts)
 	}
 #endif // end of CONFIG_OPLUS_TP_APK
 
-	if (gesture_info_temp.gesture_type == DouTap && CHK_BIT(ts->gesture_enable_indep, (1 << gesture_info_temp.gesture_type))) {
+	if (gesture_info_temp.gesture_type == DouTap && CHK_BIT(ts->gesture_enable_indep, (1 << gesture_info_temp.gesture_type)) && enabled) {
 		memcpy(&ts->gesture, &gesture_info_temp, sizeof(struct gesture_info));
 
 		input_report_key(ts->input_dev, KEY_WAKEUP, 1);
@@ -4571,6 +4574,45 @@ static const struct file_operations proc_touch_apk_fops = {
  * we need to set touchpanel_data struct as private_data to those file_inode
  * Returning zero(success) or negative errno(failed)
  */
+ 
+
+#define GESTURE_ATTR(name, out) \
+	static ssize_t name##_read_func(struct file *file, char __user *user_buf, size_t count, loff_t *ppos) \
+	{ \
+		int ret = 0; \
+		char page[PAGESIZE]; \
+		ret = sprintf(page, "%d\n", out); \
+		ret = simple_read_from_buffer(user_buf, count, ppos, page, strlen(page)); \
+		return ret; \
+	} \
+	static ssize_t name##_write_func(struct file *file, const char __user *user_buf, size_t count, loff_t *ppos) \
+	{ \
+		int enabled = 0; \
+		char page[PAGESIZE] = {0}; \
+		copy_from_user(page, user_buf, count); \
+		sscanf(page, "%d", &enabled); \
+		out = enabled > 0 ? 1 : 0; \
+		return count; \
+	} \
+	static const struct file_operations name##_proc_fops = { \
+	    .write = name##_write_func, \
+	    .read =  name##_read_func, \
+	    .open = simple_open, \
+	    .owner = THIS_MODULE, \
+	};
+
+GESTURE_ATTR(aosp_double_tap_enable, DouTap_enable);
+
+#define CREATE_PROC_NODE(PARENT, NAME, MODE) \
+	prEntry_tmp = proc_create(#NAME, MODE, PARENT, &NAME##_proc_fops); \
+	if (prEntry_tmp == NULL) { \
+		ret = -ENOMEM; \
+		TPD_INFO("%s: Couldn't create proc entry, %d\n", __func__, __LINE__); \
+	}
+
+#define CREATE_GESTURE_NODE(NAME) \
+	CREATE_PROC_NODE(prEntry_tp, NAME, 0666)
+	
 static int init_touchpanel_proc(struct touchpanel_data *ts)
 {
 	int ret = 0;
@@ -4643,6 +4685,7 @@ static int init_touchpanel_proc(struct touchpanel_data *ts)
 
     //proc files-step2-4:/proc/touchpanel/double_tap_enable (black gesture related interface)
     if (ts->black_gesture_support) {
+        CREATE_GESTURE_NODE(aosp_double_tap_enable);
         prEntry_tmp = proc_create_data("double_tap_enable", 0666, prEntry_tp, &proc_gesture_control_fops, ts);
         if (prEntry_tmp == NULL) {
             ret = -ENOMEM;
