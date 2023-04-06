@@ -581,6 +581,7 @@ static int ist8801_set_operation_mode(struct ist8801_data_t *ist8801_data,
 	return ret;
 }
 
+static bool irq_enabled;
 
 /* functions for interrupt handler */
 static irqreturn_t ist8801_up_irq_handler(int irq, void *dev_id)
@@ -593,6 +594,7 @@ static irqreturn_t ist8801_up_irq_handler(int irq, void *dev_id)
 	}
 
 	disable_irq_nosync(g_ist8801_data->irq);
+	irq_enabled = false;
 	__pm_wakeup_event(&g_ist8801_data->source, 2000);
 	oplus_hall_irq_handler(0);
 
@@ -675,6 +677,7 @@ static int ist8801_set_detection_mode(u8 mode)
 			}
 
 			disable_irq(g_ist8801_data->irq);
+			irq_enabled = false;
 			free_irq(g_ist8801_data->irq, NULL);
 
 			g_ist8801_data->irq_enabled = 0;
@@ -691,10 +694,17 @@ static int ist8801_enable_irq(bool enable)
 		return -EINVAL;
 	}
 
-	if (enable)
+	if (enable == irq_enabled)
+		return 0;
+
+
+	if (enable) {
 		enable_irq(g_ist8801_data->irq);
-	else
+		irq_enabled = true;
+	} else {
 		disable_irq_nosync(g_ist8801_data->irq);
+		irq_enabled = false;
+	}
 	return 0;
 }
 
