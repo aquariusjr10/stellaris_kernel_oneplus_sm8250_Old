@@ -94,9 +94,6 @@ static void cluster_prepare(struct lpm_cluster *cluster,
 static bool print_parsed_dt;
 module_param_named(print_parsed_dt, print_parsed_dt, bool, 0664);
 
-static bool sleep_disabled;
-module_param_named(sleep_disabled, sleep_disabled, bool, 0664);
-
 static bool sleep_disabled_dev;
 module_param_named(sleep_disabled_dev, sleep_disabled_dev, bool, 0664);
 
@@ -629,9 +626,6 @@ static inline bool lpm_disallowed(s64 sleep_us, int cpu, struct lpm_cpu *pm_cpu)
 
 	if (cpu_isolated(cpu))
 		goto out;
-
-	if (sleep_disabled)
-		return true;
 
 	bias_time = sched_lpm_disallowed_time(cpu);
 	if (bias_time) {
