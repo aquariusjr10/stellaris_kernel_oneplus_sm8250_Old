@@ -5757,12 +5757,7 @@ static void __exit tp_driver_exit(void)
     return;
 }
 
-#ifdef CONFIG_TOUCHPANEL_LATE_INIT
-late_initcall(tp_driver_init);
-#else
-module_init(tp_driver_init);
-#endif
-
+device_initcall_sync(tp_driver_init);
 module_exit(tp_driver_exit);
 /***********************End of module init and exit*******************************/
 

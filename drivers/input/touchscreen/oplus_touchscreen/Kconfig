@@ -3,11 +3,6 @@ config TOUCHPANEL_MTK_PLATFORM
 	help
 	  Say Y here if you have mtk-platform.
 
-config TOUCHPANEL_LATE_INIT
-	bool "mk6360 pmic init"
-	help
-	  Say Y here if you have mk6360 pmic.
-
 config TOUCHIRQ_UPDATE_QOS
 	bool "OPLUS touchpanel driver update qos"
 	help
