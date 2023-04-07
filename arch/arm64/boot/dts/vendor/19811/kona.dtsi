@@ -3189,8 +3189,8 @@
 		"MAX";
 
 		/* PM QoS */
-		qcom,pm-qos-cpu-groups = <0x0f 0xf0>;
-		qcom,pm-qos-cpu-group-latency-us = <44 44>;
+		qcom,pm-qos-cpu-groups = <0x01 0x02 0x04 0x08 0x10 0x20 0x40 0x80>;
+		qcom,pm-qos-cpu-group-latency-us = <44 44 44 44 44 44 44 44>;
 		qcom,pm-qos-default-cpu = <0>;
 
 		pinctrl-names = "dev-reset-assert", "dev-reset-deassert";
@@ -3260,7 +3260,7 @@
 		/* PM QoS */
 		qcom,pm-qos-irq-type = "affine_irq";
 		qcom,pm-qos-irq-latency = <44 44>;
-		qcom,pm-qos-cpu-groups = <0x3f 0xc0>;
+		qcom,pm-qos-cpu-groups = <0x01 0x02 0x04 0x08 0x10 0x20 0x40 0x80>;
 		qcom,pm-qos-legacy-latency-us = <44 44>, <44 44>;
 
 		/* DLL HSR settings. Refer go/hsr - <Target> DLL settings */
